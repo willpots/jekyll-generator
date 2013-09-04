@@ -1,0 +1,37 @@
+#!/usr/bin/env ruby
+
+statement = ARGV[0]
+
+case statement
+
+when "post"
+  puts "enter a name for the post:"
+  # Get Title
+  name = $stdin.gets.chomp
+  filename = name.downcase
+  filename.gsub! " ", "-"
+  filename.gsub! /([^A-Z^a-z^0-9^\-])/, ""
+  filename = Time.now.strftime("%Y-%m-%d-") + filename + ".md"
+
+
+  puts "enter categories, separated by comma"
+  categories = $stdin.gets.chomp
+
+  # Creating the Post
+  puts "creating post with\n \tname:\t  " + name + "\n \tfilename: " + filename
+  content = "---\n"
+  content += "layout: post\n"
+  content += "title: " + "\"" + name + "\"\n"
+  content += "date: " + Time.now.strftime("%Y-%m-%d %l:%M %P")  + "\n"
+  content += "categories: " + categories + "\n"
+  content +="---\n\n"
+  begin
+    File.open("_posts/"+filename, 'w') {|f| f.write(content) }
+  rescue => e
+    puts "error: you must run the generator in a jekyll directory"
+  end
+when String
+  puts "error: unknown type"
+else
+  puts "usage: please specific type, i.e. post"
+end
